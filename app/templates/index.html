@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Find a Doctor – MediBook{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<div class="rounded-4 p-5 mb-4 text-white" style="background: linear-gradient(135deg, #021E30 0%, #065A82 100%);">
+  <div class="row align-items-center">
+    <div class="col-md-7">
+      <h1 class="fw-bold mb-2">Book Your Appointment</h1>
+      <p class="mb-3" style="color:#94a3b8;">Browse our specialists and reserve your slot in seconds. Confirmation sent instantly to your email.</p>
+      {% if not session.user_id %}
+      <a href="{{ url_for('register') }}" class="btn btn-teal me-2"><i class="bi bi-person-plus me-1"></i>Get Started</a>
+      <a href="{{ url_for('login') }}" class="btn btn-outline-light">Login</a>
+      {% endif %}
+    </div>
+    <div class="col-md-5 text-center mt-3 mt-md-0">
+      <i class="bi bi-hospital" style="font-size:6rem;color:#0D9488;opacity:.6;"></i>
+    </div>
+  </div>
+</div>
+
+<!-- Filter -->
+<div class="card mb-4 p-3">
+  <form method="get" class="row g-2 align-items-center">
+    <div class="col-auto">
+      <label class="col-form-label fw-semibold">Filter by Specialty:</label>
+    </div>
+    <div class="col-auto">
+      <select name="specialty" class="form-select">
+        <option value="">All Specialties</option>
+        {% for sp in specialties %}
+        <option value="{{ sp }}" {% if sp == selected %}selected{% endif %}>{{ sp }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-primary">Filter</button>
+      {% if selected %}<a href="{{ url_for('index') }}" class="btn btn-outline-secondary ms-1">Clear</a>{% endif %}
+    </div>
+  </form>
+</div>
+
+<!-- Doctor grid -->
+<div class="row g-4">
+  {% if doctors %}
+    {% for doc in doctors %}
+    <div class="col-md-6 col-lg-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-3">
+            <div class="rounded-circle d-flex align-items-center justify-content-center me-3 fw-bold text-white"
+                 style="width:52px;height:52px;background:#065A82;font-size:1.3rem;">
+              {{ doc.name[0] | upper }}
+            </div>
+            <div>
+              <h6 class="mb-0 fw-bold">Dr. {{ doc.name }}</h6>
+              <span class="badge-specialty">{{ doc.specialty }}</span>
+            </div>
+          </div>
+          <p class="text-muted small mb-3">{{ doc.bio or 'Experienced specialist ready to help.' }}</p>
+          {% if session.user_id and session.role == 'patient' %}
+          <a href="{{ url_for('book', doctor_id=doc.id) }}" class="btn btn-primary btn-sm w-100">
+            <i class="bi bi-calendar-plus me-1"></i>Book Appointment
+          </a>
+          {% elif not session.user_id %}
+          <a href="{{ url_for('login') }}" class="btn btn-outline-primary btn-sm w-100">Login to Book</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+  <div class="col-12 text-center py-5 text-muted">
+    <i class="bi bi-search" style="font-size:3rem;"></i>
+    <p class="mt-2">No doctors found for "{{ selected }}".</p>
+    <a href="{{ url_for('index') }}" class="btn btn-outline-primary">View All Doctors</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

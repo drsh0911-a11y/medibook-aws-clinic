@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}MediBook – Clinic Appointments{% endblock %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="{{ static_url('css/medibook.css') }}" rel="stylesheet">
+  <style>
+    :root {
+      --primary:  #065A82;
+      --teal:     #0D9488;
+      --mint:     #02C39A;
+      --dark-bg:  #021E30;
+    }
+    body { background: #f8fafc; font-family: 'Segoe UI', system-ui, sans-serif; }
+    .navbar { background: var(--dark-bg) !important; }
+    .navbar-brand { color: var(--mint) !important; font-weight: 700; font-size: 1.3rem; }
+    .nav-link { color: #94a3b8 !important; }
+    .nav-link:hover { color: #fff !important; }
+    .btn-primary { background: var(--primary); border-color: var(--primary); }
+    .btn-primary:hover { background: #044a6a; border-color: #044a6a; }
+    .btn-teal { background: var(--teal); border-color: var(--teal); color: #fff; }
+    .btn-teal:hover { background: #0a7a70; border-color: #0a7a70; color: #fff; }
+    .badge-specialty { background: #e0f2fe; color: var(--primary); font-size: .75rem; border-radius: 999px; padding: .2rem .7rem; font-weight: 600; }
+    .card { border: none; box-shadow: 0 1px 6px rgba(0,0,0,.07); border-radius: 12px; }
+    .card-header-primary { background: var(--primary); color: #fff; border-radius: 12px 12px 0 0 !important; }
+    .status-scheduled { color: var(--primary); font-weight: 600; }
+    .status-completed  { color: #16a34a; font-weight: 600; }
+    .status-cancelled  { color: #dc2626; font-weight: 600; }
+    .status-no-show    { color: #d97706; font-weight: 600; }
+    footer { background: var(--dark-bg); color: #64748b; font-size: .82rem; }
+  </style>
+  {% block head %}{% endblock %}
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <div class="container">
+    <a class="navbar-brand" href="{{ url_for('index') }}">
+      <i class="bi bi-hospital me-2"></i>MediBook
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="nav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Doctors</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('architecture') }}">Architecture</a></li>
+        {% if session.role == 'patient' %}
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('patient_dashboard') }}">My Appointments</a></li>
+        {% endif %}
+        {% if session.role == 'doctor' %}
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('doctor_dashboard') }}">My Schedule</a></li>
+        {% endif %}
+      </ul>
+      <ul class="navbar-nav">
+        {% if session.user_id %}
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+            <i class="bi bi-person-circle me-1"></i>{{ session.name }}
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item text-danger" href="{{ url_for('logout') }}">
+              <i class="bi bi-box-arrow-right me-2"></i>Logout
+            </a></li>
+          </ul>
+        </li>
+        {% else %}
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">Login</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('register') }}">Register</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container my-4">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}
+    <div class="alert alert-{{ 'danger' if cat == 'danger' else cat }} alert-dismissible fade show" role="alert">
+      {{ msg }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+</div>
+
+<footer class="mt-5 py-3 text-center">
+  <div class="container">
+    MediBook &mdash; Medical Clinic Appointment System &bull; AWS Cloud Computing Project &bull; AASTMT Spring 25/26
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

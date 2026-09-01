@@ -1,0 +1,7 @@
+*.pem
+.env
+Medical_Clinic_Proposal.pptx
+__pycache__/
+*.pyc
+venv/
+.venv/

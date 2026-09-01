@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}AWS Architecture – MediBook{% endblock %}
+
+{% block content %}
+<div class="card mb-4">
+  <div class="card-body p-4">
+    <h2 class="fw-bold mb-2"><i class="bi bi-diagram-3 me-2"></i>System Architecture</h2>
+    <p class="text-muted">All resources in <strong>us-east-1</strong>. Uses LabRole + LabInstanceProfile on EC2.</p>
+    {% if cloudfront_enabled %}
+    <span class="badge bg-success">CloudFront CDN active</span>
+    {% else %}
+    <span class="badge bg-secondary">Local / static from Flask (set CLOUDFRONT_URL for S3 CDN)</span>
+    {% endif %}
+    <span class="badge bg-info text-dark ms-1">Mode: {{ deployment_mode }}</span>
+  </div>
+</div>
+
+<div class="card mb-4 p-4 bg-light">
+  <pre class="mb-0 small architecture-diagram">User Browser
+    |
+    v
+Elastic Load Balancer (HTTP :80)
+    |
+    v
+EC2 (t2.micro) -- LabInstanceProfile --> Flask + Gunicorn + Nginx
+    |                    |
+    |                    +--> RDS MySQL (clinic_db)
+    |                    +--> SNS (email confirmations)
+    |                    +--> CloudWatch (logs / alarms)
+    |
+    v
+CloudFront &lt;-- origin -- S3 (static/css, images)</pre>
+</div>
+
+<div class="row g-3">
+  {% for name, desc in services %}
+  <div class="col-md-6">
+    <div class="card h-100 p-3">
+      <h6 class="fw-bold text-primary mb-1">{{ name }}</h6>
+      <p class="text-muted small mb-0">{{ desc }}</p>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

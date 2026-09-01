@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Book with Dr. {{ doctor.name }} – MediBook{% endblock %}
+
+{% block head %}
+<style>
+  .slot-btn { font-size:.82rem; padding:.3rem .7rem; }
+  .slot-btn.taken { background:#fee2e2; color:#dc2626; border-color:#fca5a5; cursor:not-allowed; }
+  .day-section { border-left: 3px solid #065A82; padding-left: 1rem; margin-bottom: 1.5rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+  <!-- Doctor info -->
+  <div class="col-md-4 mb-4">
+    <div class="card">
+      <div class="card-body text-center">
+        <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3 fw-bold text-white"
+             style="width:72px;height:72px;background:#065A82;font-size:1.8rem;">
+          {{ doctor.name[0] | upper }}
+        </div>
+        <h5 class="fw-bold mb-1">Dr. {{ doctor.name }}</h5>
+        <span class="badge-specialty">{{ doctor.specialty }}</span>
+        <hr>
+        <p class="text-muted small mb-0">Select a date and time slot on the right to confirm your appointment.</p>
+      </div>
+    </div>
+    <a href="{{ url_for('index') }}" class="btn btn-outline-secondary w-100 mt-3">
+      <i class="bi bi-arrow-left me-1"></i>Back to Doctors
+    </a>
+  </div>
+
+  <!-- Slots -->
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-header card-header-primary py-3">
+        <h5 class="mb-0"><i class="bi bi-calendar3 me-2"></i>Available Slots — Next 7 Days</h5>
+      </div>
+      <div class="card-body p-4">
+        <form method="post" id="bookingForm">
+          <input type="hidden" name="appointment_date" id="selectedDate">
+          <input type="hidden" name="time_slot" id="selectedSlot">
+
+          {% for day, slots in available_slots.items() %}
+          <div class="day-section">
+            <h6 class="fw-bold text-primary mb-2">
+              {{ day }}
+              <small class="text-muted fw-normal ms-2">({{ slots | length }} slots available)</small>
+            </h6>
+            {% if slots %}
+              {% for slot in slots %}
+              <button type="button" class="btn btn-outline-primary slot-btn me-2 mb-2"
+                      onclick="selectSlot('{{ day }}', '{{ slot }}', this)">
+                {{ slot }}
+              </button>
+              {% endfor %}
+            {% else %}
+              <span class="text-muted small">No slots available this day.</span>
+            {% endif %}
+          </div>
+          {% endfor %}
+
+          <div id="confirmSection" class="d-none mt-4 p-3 rounded" style="background:#f0f9ff;border:1px solid #bae6fd;">
+            <h6 class="fw-bold mb-1">Confirm Appointment</h6>
+            <p class="mb-3">Dr. <strong>{{ doctor.name }}</strong> &mdash; <span id="confirmText" class="text-primary fw-semibold"></span></p>
+            <button type="submit" class="btn btn-teal">
+              <i class="bi bi-check-lg me-1"></i>Confirm &amp; Book
+            </button>
+            <button type="button" class="btn btn-outline-secondary ms-2" onclick="clearSelection()">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let activeBtn = null;
+function selectSlot(date, slot, btn) {
+  if (activeBtn) activeBtn.classList.remove('btn-primary');
+  activeBtn = btn;
+  btn.classList.add('btn-primary');
+  btn.classList.remove('btn-outline-primary');
+  document.getElementById('selectedDate').value = date;
+  document.getElementById('selectedSlot').value  = slot;
+  document.getElementById('confirmText').textContent = date + ' at ' + slot;
+  document.getElementById('confirmSection').classList.remove('d-none');
+}
+function clearSelection() {
+  if (activeBtn) { activeBtn.classList.remove('btn-primary'); activeBtn.classList.add('btn-outline-primary'); }
+  activeBtn = null;
+  document.getElementById('confirmSection').classList.add('d-none');
+}
+</script>
+{% endblock %}

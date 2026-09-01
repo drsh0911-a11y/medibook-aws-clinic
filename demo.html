@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MediBook – Live Demo</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f1f5f9; min-height: 100vh; padding: 1rem; }
+
+    :root {
+      --mc-primary: #065A82;
+      --mc-teal: #0D9488;
+      --mc-dark: #021E30;
+      --mc-mint: #02C39A;
+      --mc-light: #F0F9FF;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --border: 0.5px solid #e2e8f0;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --bg: #ffffff;
+      --bg-secondary: #f8fafc;
+    }
+
+    #mb { max-width: 960px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: var(--radius-lg); overflow: hidden; background: #fff; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+
+    /* NAV */
+    .mb-nav { background: #021E30; padding: 0.75rem 1.25rem; display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap; }
+    .mb-brand { color: #02C39A; font-weight: 600; font-size: 18px; display: flex; align-items: center; gap: 6px; }
+    .mb-nav a { color: #94a3b8; font-size: 13px; cursor: pointer; text-decoration: none; transition: color .15s; }
+    .mb-nav a:hover { color: #fff; }
+    .spacer { flex: 1; }
+    .nav-user { color: #e2e8f0; font-size: 13px; display: flex; align-items: center; gap: 5px; }
+
+    /* BODY */
+    .mb-body { background: #f8fafc; padding: 1.25rem; min-height: 480px; }
+
+    /* BUTTONS */
+    .btn { cursor: pointer; border-radius: var(--radius-md); border: none; font-size: 13px; font-weight: 500; padding: 0.45rem 1rem; display: inline-flex; align-items: center; gap: 6px; transition: background .15s, transform .1s; text-decoration: none; }
+    .btn:active { transform: scale(0.97); }
+    .btn-primary { background: #065A82; color: #fff; }
+    .btn-primary:hover { background: #044a6a; }
+    .btn-teal { background: #0D9488; color: #fff; }
+    .btn-teal:hover { background: #0a7a70; }
+    .btn-outline { background: transparent; border: 1px solid #cbd5e1; color: #1e293b; }
+    .btn-outline:hover { background: #f1f5f9; }
+    .btn-danger { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+    .btn-danger:hover { background: #fecaca; }
+    .btn-sm { padding: 0.3rem 0.75rem; font-size: 12px; }
+    .btn-ghost { background: transparent; color: #f87171; border: none; font-size: 13px; cursor: pointer; }
+    .btn-ghost:hover { color: #fca5a5; }
+
+    /* CARDS */
+    .card { background: #fff; border-radius: var(--radius-lg); border: 1px solid #e2e8f0; padding: 1rem; }
+    .card-flat { background: #fff; border-radius: var(--radius-lg); border: 1px solid #e2e8f0; overflow: hidden; }
+
+    /* GRID */
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; }
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; align-items: start; }
+
+    /* HERO */
+    .hero { background: linear-gradient(135deg, #021E30 0%, #065A82 100%); border-radius: var(--radius-lg); padding: 1.5rem 1.75rem; margin-bottom: 1rem; color: #fff; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
+    .hero h1 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+    .hero p { font-size: 13px; color: #94a3b8; margin-bottom: 1rem; }
+    .hero-icon { font-size: 72px; color: #0D9488; opacity: .5; }
+
+    /* AVATAR */
+    .avatar { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; color: #fff; flex-shrink: 0; }
+    .avatar-lg { width: 64px; height: 64px; font-size: 24px; margin: 0 auto 10px; }
+
+    /* BADGE */
+    .badge { background: #e0f2fe; color: #065A82; font-size: 11px; border-radius: 999px; padding: 2px 9px; font-weight: 600; display: inline-block; }
+    .badge-green { background: #dcfce7; color: #166534; }
+    .badge-amber { background: #fef3c7; color: #92400e; }
+    .badge-red   { background: #fee2e2; color: #991b1b; }
+
+    /* FORM */
+    .form-row { margin-bottom: 0.85rem; }
+    .form-row label { display: block; font-size: 12px; font-weight: 600; color: #475569; margin-bottom: 4px; text-transform: uppercase; letter-spacing: .04em; }
+    input[type=text], input[type=email], input[type=password], input[type=date], select, textarea {
+      width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: var(--radius-md);
+      font-size: 13px; color: #1e293b; background: #fff; outline: none; transition: border-color .15s;
+    }
+    input:focus, select:focus { border-color: #065A82; box-shadow: 0 0 0 3px rgba(6,90,130,.12); }
+
+    /* SLOTS */
+    .slot-grid { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 14px; }
+    .slot { cursor: pointer; border: 1px solid #cbd5e1; border-radius: var(--radius-md); padding: 5px 11px; font-size: 12px; color: #475569; background: #fff; transition: all .15s; user-select: none; }
+    .slot:hover:not(.taken) { border-color: #065A82; color: #065A82; background: #eff6ff; }
+    .slot.selected { background: #065A82; color: #fff; border-color: #065A82; }
+    .slot.taken { background: #fee2e2; color: #fca5a5; border-color: #fca5a5; cursor: not-allowed; text-decoration: line-through; }
+
+    /* TABLE */
+    .tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .tbl th { text-align: left; padding: 10px 14px; font-size: 11px; font-weight: 600; color: #64748b; background: #f8fafc; border-bottom: 1px solid #e2e8f0; text-transform: uppercase; letter-spacing: .05em; }
+    .tbl td { padding: 10px 14px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+    .tbl tr:last-child td { border-bottom: none; }
+    .tbl tr:hover td { background: #f8fafc; }
+
+    /* STATUS */
+    .status-scheduled { color: #065A82; font-weight: 600; font-size: 12px; }
+    .status-completed  { color: #16a34a; font-weight: 600; font-size: 12px; }
+    .status-cancelled  { color: #dc2626; font-weight: 600; font-size: 12px; }
+    .status-no-show    { color: #d97706; font-weight: 600; font-size: 12px; }
+
+    /* STATS */
+    .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 1rem; }
+    .stat { background: #fff; border-radius: var(--radius-md); padding: 0.75rem; text-align: center; border: 1px solid #e2e8f0; }
+    .stat-num { font-size: 24px; font-weight: 700; color: #1e293b; }
+    .stat-lbl { font-size: 11px; color: #64748b; margin-top: 2px; }
+
+    /* ALERT */
+    .alert { padding: 10px 14px; border-radius: var(--radius-md); font-size: 13px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .alert-success { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+    .alert-danger  { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+    .alert-info    { background: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc; }
+
+    /* SNS OVERLAY */
+    .overlay-wrap { min-height: 360px; background: rgba(2,30,48,0.75); display: flex; align-items: center; justify-content: center; border-radius: var(--radius-lg); }
+    .sns-card { background: #fff; border-radius: var(--radius-lg); padding: 2rem; max-width: 360px; width: 100%; border: 2px solid #6ee7b7; text-align: center; }
+    .sns-icon { font-size: 52px; color: #0D9488; margin-bottom: 0.75rem; }
+    .email-preview { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: var(--radius-md); padding: 1rem; text-align: left; font-size: 12px; color: #475569; margin: 1rem 0; line-height: 1.7; }
+    .email-preview strong { color: #1e293b; }
+    .sns-badge { display: inline-flex; align-items: center; gap: 5px; background: #021E30; color: #02C39A; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 999px; margin-top: 6px; }
+
+    /* FILTER */
+    .filter-row { display: flex; gap: 8px; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; }
+    .filter-row select { width: auto; }
+
+    /* SECTION HEADER */
+    .sec-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 8px; }
+    .sec-title { font-size: 18px; font-weight: 700; color: #1e293b; display: flex; align-items: center; gap: 8px; }
+
+    /* STEP BAR */
+    .step-bar { background: #021E30; padding: 0.65rem 1.25rem; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; border-top: 1px solid #0f2d48; }
+    .step-bar-label { font-size: 11px; color: #475569; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; margin-right: 4px; }
+    .step-btn { cursor: pointer; background: #0f3a52; color: #7dd3fc; border: 1px solid #1e5f82; border-radius: 6px; padding: 4px 11px; font-size: 11px; font-weight: 500; transition: background .15s; }
+    .step-btn:hover { background: #065A82; color: #fff; }
+
+    /* CONFIRM BOX */
+    .confirm-box { background: #f0f9ff; border: 1px solid #bae6fd; border-radius: var(--radius-md); padding: 1rem; margin-top: 0.75rem; }
+
+    /* DAY SECTION */
+    .day-block { border-left: 3px solid #065A82; padding-left: 12px; margin-bottom: 1.25rem; }
+    .day-title { font-size: 13px; font-weight: 600; color: #1e293b; margin-bottom: 6px; }
+    .day-sub { font-size: 11px; color: #94a3b8; font-weight: 400; }
+
+    /* DOCTOR SIDE CARD */
+    .doc-side { text-align: center; }
+    .doc-side .name { font-size: 16px; font-weight: 700; color: #1e293b; margin: 8px 0 4px; }
+
+    /* EMPTY STATE */
+    .empty { text-align: center; padding: 3rem; color: #94a3b8; }
+    .empty i { font-size: 48px; margin-bottom: 1rem; display: block; }
+
+    /* AWS BADGE ROW */
+    .aws-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 0.75rem; }
+    .aws-pill { background: #0f3a52; color: #7dd3fc; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 999px; border: 1px solid #1e5f82; }
+
+    /* AUTH CARD */
+    .auth-wrap { max-width: 380px; margin: 2rem auto; }
+    .auth-card { background: #fff; border-radius: var(--radius-lg); border: 1px solid #e2e8f0; overflow: hidden; }
+    .auth-header { background: #021E30; padding: 1rem 1.25rem; }
+    .auth-header h2 { color: #fff; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; margin: 0; }
+    .auth-body { padding: 1.25rem; }
+    .divider { border: none; border-top: 1px solid #f1f5f9; margin: 1rem 0 0.75rem; }
+    .demo-creds { background: #f8fafc; border-radius: var(--radius-md); padding: 0.75rem; font-size: 11px; color: #64748b; line-height: 1.8; }
+    .demo-creds code { background: #e2e8f0; color: #1e293b; padding: 1px 5px; border-radius: 4px; font-size: 11px; }
+  </style>
+</head>
+<body>
+
+<div id="mb">
+  <div class="mb-nav" id="mb-nav"></div>
+  <div class="mb-body" id="mb-body"></div>
+  <div class="step-bar" id="step-bar"></div>
+</div>
+
+<script>
+const doctors = [
+  { id:1, name:'Sara Ahmed',   specialty:'Cardiology',           color:'#065A82' },
+  { id:2, name:'Omar Khalil',  specialty:'Neurology',            color:'#7C3AED' },
+  { id:3, name:'Nada Hassan',  specialty:'Dermatology',          color:'#BE185D' },
+  { id:4, name:'Youssef Taha', specialty:'Orthopedics',          color:'#B45309' },
+  { id:5, name:'Hana Mostafa', specialty:'Pediatrics',           color:'#047857' },
+  { id:6, name:'Karim Saber',  specialty:'General Practitioner', color:'#0D9488' },
+];
+
+const SLOTS = ['09:00','09:30','10:00','10:30','11:00','11:30','13:00','13:30','14:00','14:30','15:00','15:30'];
+const DATES = ['2026-05-16','2026-05-17','2026-05-18'];
+const TAKEN = {
+  '2026-05-16': ['09:00','10:00','13:30'],
+  '2026-05-17': ['09:30','11:00'],
+  '2026-05-18': []
+};
+
+const docBookings = [
+  { time:'09:30', patient:'Ahmed Hassan',    email:'ahmed@patient.com',   status:'scheduled' },
+  { time:'10:00', patient:'Sara Mostafa',    email:'sara.m@patient.com',  status:'scheduled' },
+  { time:'11:30', patient:'Youssef Ibrahim', email:'youssef@patient.com', status:'completed' },
+  { time:'13:00', patient:'Nour Ali',        email:'nour@patient.com',    status:'scheduled' },
+];
+
+const users = {
+  'ahmed@patient.com': { password:'123456',      name:'Ahmed Hassan', role:'patient' },
+  'sara@clinic.com':   { password:'password123', name:'Sara Ahmed',   role:'doctor', docId:1 },
+};
+
+let S = {
+  screen: 'home',
+  user: null,
+  selectedDoctor: null,
+  selectedDate: null,
+  selectedSlot: null,
+  bookings: [],
+  filterSpec: '',
+  loginError: '',
+  regSuccess: false,
+};
+
+/* ── NAV ── */
+function renderNav() {
+  document.getElementById('mb-nav').innerHTML = `
+    <span class="mb-brand"><i class="ti ti-hospital"></i> MediBook</span>
+    <a onclick="go('home')">Doctors</a>
+    ${S.user && S.user.role==='patient' ? '<a onclick="go(\'patient_dash\')">My Appointments</a>' : ''}
+    ${S.user && S.user.role==='doctor'  ? '<a onclick="go(\'doctor_dash\')">My Schedule</a>' : ''}
+    <div class="spacer"></div>
+    ${S.user
+      ? `<span class="nav-user"><i class="ti ti-user-circle"></i> ${S.user.name}</span>
+         <button class="btn-ghost" onclick="logout()"><i class="ti ti-logout"></i> Logout</button>`
+      : `<a onclick="go('login')">Login</a>
+         <a onclick="go('register')" style="background:#065A82;color:#fff;padding:5px 14px;border-radius:8px;margin-left:4px;font-weight:600;">Register</a>`
+    }
+  `;
+}
+
+/* ── SCREENS ── */
+function screenHome() {
+  const specs = [...new Set(doctors.map(d=>d.specialty))];
+  const list  = S.filterSpec ? doctors.filter(d=>d.specialty===S.filterSpec) : doctors;
+  return `
+    <div class="hero">
+      <div>
+        <h1><i class="ti ti-calendar-check"></i> Book your appointment</h1>
+        <p>Browse our specialists and reserve your slot in seconds.<br>Confirmation sent instantly via Amazon SNS.</p>
+        ${!S.user
+          ? `<button class="btn btn-teal" onclick="go('register')"><i class="ti ti-user-plus"></i> Get started</button>
+             <button class="btn btn-outline" style="color:#fff;border-color:#334155;margin-left:8px;" onclick="go('login')">Login</button>`
+          : `<div class="aws-pills">
+               <span class="aws-pill">EC2</span><span class="aws-pill">RDS</span><span class="aws-pill">S3</span>
+               <span class="aws-pill">SNS</span><span class="aws-pill">ELB</span><span class="aws-pill">CloudWatch</span>
+             </div>`
+        }
+      </div>
+      <i class="ti ti-hospital hero-icon"></i>
+    </div>
+
+    <div class="filter-row">
+      <i class="ti ti-filter" style="color:#94a3b8;font-size:16px;"></i>
+      <select onchange="S.filterSpec=this.value;render()">
+        <option value="">All specialties</option>
+        ${specs.map(sp=>`<option value="${sp}" ${S.filterSpec===sp?'selected':''}>${sp}</option>`).join('')}
+      </select>
+      ${S.filterSpec ? `<button class="btn btn-sm btn-outline" onclick="S.filterSpec='';render()"><i class="ti ti-x"></i> Clear</button>` : ''}
+    </div>
+
+    <div class="grid-3">
+      ${list.map(d=>`
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div class="avatar" style="background:${d.color};">${d.name[0]}</div>
+            <div>
+              <div style="font-weight:700;font-size:14px;color:#1e293b;">Dr. ${d.name}</div>
+              <span class="badge">${d.specialty}</span>
+            </div>
+          </div>
+          <p style="font-size:12px;color:#64748b;line-height:1.5;flex:1;">Experienced specialist ready to help you with expert care.</p>
+          ${S.user && S.user.role==='patient'
+            ? `<button class="btn btn-primary btn-sm" onclick="openBook(${d.id})" style="justify-content:center;"><i class="ti ti-calendar-plus"></i> Book appointment</button>`
+            : !S.user
+              ? `<button class="btn btn-outline btn-sm" onclick="go('login')" style="justify-content:center;">Login to book</button>`
+              : ''
+          }
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function screenLogin() {
+  return `
+    <div class="auth-wrap">
+      <div class="auth-card">
+        <div class="auth-header"><h2><i class="ti ti-lock"></i> Sign in to MediBook</h2></div>
+        <div class="auth-body">
+          ${S.loginError ? `<div class="alert alert-danger"><i class="ti ti-alert-circle"></i> ${S.loginError}</div>` : ''}
+          <div class="form-row"><label>Email address</label>
+            <input type="email" id="le" value="ahmed@patient.com" placeholder="you@example.com">
+          </div>
+          <div class="form-row"><label>Password</label>
+            <input type="password" id="lp" value="123456" placeholder="Your password">
+          </div>
+          <button class="btn btn-primary" style="width:100%;justify-content:center;padding:.6rem;" onclick="doLogin()">
+            <i class="ti ti-login"></i> Login
+          </button>
+          <p style="text-align:center;font-size:12px;color:#64748b;margin-top:12px;">
+            New here? <a onclick="go('register')" style="color:#065A82;cursor:pointer;font-weight:600;">Create an account</a>
+          </p>
+          <hr class="divider">
+          <div class="demo-creds">
+            <strong style="color:#1e293b;">Demo credentials:</strong><br>
+            Patient: <code>ahmed@patient.com</code> / <code>123456</code><br>
+            Doctor: <code>sara@clinic.com</code> / <code>password123</code>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function screenRegister() {
+  return `
+    <div class="auth-wrap">
+      <div class="auth-card">
+        <div class="auth-header"><h2><i class="ti ti-user-plus"></i> Create an account</h2></div>
+        <div class="auth-body">
+          ${S.regSuccess ? `<div class="alert alert-success"><i class="ti ti-check"></i> Account created! Redirecting to login...</div>` : ''}
+          <div class="form-row"><label>Full name</label>
+            <input type="text" placeholder="Ahmed Hassan">
+          </div>
+          <div class="form-row"><label>Email address</label>
+            <input type="email" placeholder="you@example.com">
+          </div>
+          <div class="form-row"><label>Password</label>
+            <input type="password" placeholder="Min. 6 characters">
+          </div>
+          <div class="form-row"><label>Register as</label>
+            <select id="regRole" onchange="document.getElementById('specDiv').style.display=this.value==='doctor'?'block':'none'">
+              <option value="patient">Patient</option>
+              <option value="doctor">Doctor</option>
+            </select>
+          </div>
+          <div id="specDiv" style="display:none;" class="form-row"><label>Specialty</label>
+            <select>
+              <option>General Practitioner</option><option>Cardiology</option>
+              <option>Dermatology</option><option>Neurology</option>
+              <option>Orthopedics</option><option>Pediatrics</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" style="width:100%;justify-content:center;padding:.6rem;" onclick="doRegister()">
+            <i class="ti ti-check"></i> Create account
+          </button>
+          <p style="text-align:center;font-size:12px;color:#64748b;margin-top:12px;">
+            Already have an account? <a onclick="go('login')" style="color:#065A82;cursor:pointer;font-weight:600;">Login</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function screenBook() {
+  const d = doctors.find(x=>x.id===S.selectedDoctor);
+  if (!d) return '<p>Doctor not found.</p>';
+  return `
+    <div class="grid-2">
+      <div class="card doc-side">
+        <div class="avatar avatar-lg" style="background:${d.color};">${d.name[0]}</div>
+        <div class="name">Dr. ${d.name}</div>
+        <span class="badge">${d.specialty}</span>
+        <hr style="border:none;border-top:1px solid #f1f5f9;margin:1rem 0;">
+        <p style="font-size:12px;color:#64748b;line-height:1.6;">Select a date and available time slot on the right, then confirm your booking.</p>
+        <button class="btn btn-outline btn-sm" onclick="go('home')" style="margin-top:0.75rem;"><i class="ti ti-arrow-left"></i> Back to doctors</button>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:1.1rem;display:flex;align-items:center;gap:8px;">
+          <i class="ti ti-calendar" style="color:#065A82;"></i> Available slots — next 3 days
+        </h3>
+        ${DATES.map(date=>`
+          <div class="day-block">
+            <div class="day-title">${date} <span class="day-sub">(${SLOTS.length-(TAKEN[date]||[]).length} slots free)</span></div>
+            <div class="slot-grid">
+              ${SLOTS.map(t=>{
+                const isTaken = (TAKEN[date]||[]).includes(t);
+                const isSel   = S.selectedDate===date && S.selectedSlot===t;
+                return `<span class="slot ${isTaken?'taken':''} ${isSel?'selected':''}"
+                          onclick="${isTaken ? '' : `selectSlot('${date}','${t}')`}">${t}</span>`;
+              }).join('')}
+            </div>
+          </div>
+        `).join('')}
+
+        ${S.selectedSlot ? `
+          <div class="confirm-box">
+            <div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:6px;"><i class="ti ti-check-circle" style="color:#0D9488;"></i> Confirm your appointment</div>
+            <div style="font-size:13px;color:#475569;margin-bottom:12px;">
+              Dr. <strong>${d.name}</strong> &mdash;
+              <strong style="color:#065A82;">${S.selectedDate} at ${S.selectedSlot}</strong>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-teal btn-sm" onclick="confirmBook()"><i class="ti ti-calendar-check"></i> Confirm &amp; book</button>
+              <button class="btn btn-outline btn-sm" onclick="S.selectedSlot=null;S.selectedDate=null;render()">Cancel</button>
+            </div>
+          </div>
+        ` : `<div style="font-size:12px;color:#94a3b8;text-align:center;padding:0.5rem 0;"><i class="ti ti-hand-click"></i> Click a time slot above to select it</div>`}
+      </div>
+    </div>
+  `;
+}
+
+function screenSNS() {
+  const d = doctors.find(x=>x.id===S.selectedDoctor);
+  return `
+    <div class="overlay-wrap">
+      <div class="sns-card">
+        <div class="sns-icon"><i class="ti ti-mail-check"></i></div>
+        <h2 style="font-size:20px;font-weight:700;color:#1e293b;margin-bottom:6px;">Appointment confirmed!</h2>
+        <p style="font-size:13px;color:#64748b;margin-bottom:0;">Amazon SNS sent a confirmation email to your inbox.</p>
+        <div class="email-preview">
+          <strong>Subject: Appointment Confirmed — MediBook</strong><br><br>
+          Dear <strong>${S.user ? S.user.name : 'Patient'}</strong>,<br><br>
+          Your appointment with <strong>Dr. ${d ? d.name : ''}</strong>
+          (${d ? d.specialty : ''}) has been confirmed for
+          <strong>${S.selectedDate} at ${S.selectedSlot}</strong>.<br><br>
+          Please arrive 10 minutes early.<br><br>
+          — MediBook Clinic System
+        </div>
+        <div class="sns-badge"><i class="ti ti-brand-aws"></i> Sent via Amazon SNS &bull; us-east-1</div>
+        <div style="display:flex;gap:8px;justify-content:center;margin-top:1.25rem;">
+          <button class="btn btn-primary btn-sm" onclick="go('patient_dash')"><i class="ti ti-calendar-check"></i> My appointments</button>
+          <button class="btn btn-outline btn-sm" onclick="go('home')"><i class="ti ti-home"></i> Home</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function screenPatientDash() {
+  return `
+    <div class="sec-header">
+      <div class="sec-title"><i class="ti ti-calendar-check" style="color:#065A82;"></i> My appointments</div>
+      <button class="btn btn-primary btn-sm" onclick="go('home')"><i class="ti ti-plus"></i> Book new</button>
+    </div>
+    ${S.bookings.length === 0
+      ? `<div class="empty"><i class="ti ti-calendar-off"></i>
+           <p style="font-size:16px;font-weight:600;margin-bottom:6px;">No appointments yet</p>
+           <p style="font-size:13px;color:#94a3b8;margin-bottom:1rem;">Book your first appointment with one of our specialists.</p>
+           <button class="btn btn-primary" onclick="go('home')"><i class="ti ti-search"></i> Browse doctors</button>
+         </div>`
+      : `<div class="card-flat">
+           <table class="tbl">
+             <thead><tr><th>Doctor</th><th>Specialty</th><th>Date</th><th>Time</th><th>Status</th><th></th></tr></thead>
+             <tbody>
+               ${S.bookings.map((b,i)=>{
+                 const d = doctors.find(x=>x.id===b.docId);
+                 return `<tr>
+                   <td style="font-weight:600;color:#1e293b;">Dr. ${d?d.name:''}</td>
+                   <td><span class="badge">${d?d.specialty:''}</span></td>
+                   <td style="color:#475569;">${b.date}</td>
+                   <td style="color:#065A82;font-weight:600;">${b.time}</td>
+                   <td><span class="status-${b.status}">${b.status.charAt(0).toUpperCase()+b.status.slice(1)}</span></td>
+                   <td>${b.status==='scheduled'
+                     ? `<button class="btn btn-sm btn-danger" onclick="cancelBooking(${i})"><i class="ti ti-x"></i> Cancel</button>`
+                     : ''}</td>
+                 </tr>`;
+               }).join('')}
+             </tbody>
+           </table>
+         </div>`
+    }
+  `;
+}
+
+function screenDoctorDash() {
+  const statuses = ['scheduled','completed','cancelled','no-show'];
+  return `
+    <div class="sec-header">
+      <div class="sec-title"><i class="ti ti-calendar" style="color:#0D9488;"></i> My schedule</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <i class="ti ti-calendar-event" style="color:#64748b;"></i>
+        <input type="date" value="2026-05-16" style="width:auto;">
+      </div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat"><div class="stat-num">${docBookings.length}</div><div class="stat-lbl">Total</div></div>
+      <div class="stat"><div class="stat-num" style="color:#065A82;">${docBookings.filter(b=>b.status==='scheduled').length}</div><div class="stat-lbl">Scheduled</div></div>
+      <div class="stat"><div class="stat-num" style="color:#16a34a;">${docBookings.filter(b=>b.status==='completed').length}</div><div class="stat-lbl">Completed</div></div>
+      <div class="stat"><div class="stat-num" style="color:#dc2626;">${docBookings.filter(b=>b.status==='cancelled').length}</div><div class="stat-lbl">Cancelled</div></div>
+    </div>
+
+    <div class="card-flat">
+      <table class="tbl">
+        <thead><tr><th>Time</th><th>Patient</th><th>Email</th><th>Status</th><th>Update status</th></tr></thead>
+        <tbody id="docTbody">
+          ${docBookings.map((b,i)=>`
+            <tr>
+              <td style="color:#065A82;font-weight:700;">${b.time}</td>
+              <td style="font-weight:600;color:#1e293b;">${b.patient}</td>
+              <td style="font-size:12px;color:#64748b;">${b.email}</td>
+              <td><span class="status-${b.status}">${b.status.charAt(0).toUpperCase()+b.status.slice(1)}</span></td>
+              <td>
+                <div style="display:flex;gap:6px;align-items:center;">
+                  <select id="sel_${i}" style="width:auto;font-size:12px;padding:5px 8px;">
+                    ${statuses.map(st=>`<option value="${st}" ${b.status===st?'selected':''}>${st.charAt(0).toUpperCase()+st.slice(1)}</option>`).join('')}
+                  </select>
+                  <button class="btn btn-teal btn-sm" onclick="updateDocStatus(${i})"><i class="ti ti-device-floppy"></i> Save</button>
+                </div>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+/* ── STEP BAR ── */
+const steps = [
+  { label: '1. Home page',         fn: () => go('home') },
+  { label: '2. Register',          fn: () => go('register') },
+  { label: '3. Patient login',     fn: () => { S.loginError=''; go('login'); } },
+  { label: '4. Browse doctors',    fn: () => { loginAs('ahmed@patient.com','123456'); } },
+  { label: '5. Book appointment',  fn: () => { loginAs('ahmed@patient.com','123456'); S.selectedDoctor=1; go('book'); } },
+  { label: '6. SNS confirmation',  fn: () => { loginAs('ahmed@patient.com','123456'); S.selectedDoctor=1; S.selectedDate='2026-05-17'; S.selectedSlot='10:30'; confirmBook(); } },
+  { label: '7. My appointments',   fn: () => { loginAs('ahmed@patient.com','123456'); go('patient_dash'); } },
+  { label: '8. Doctor login',      fn: () => { logout(); go('login'); } },
+  { label: '9. Doctor schedule',   fn: () => { loginAs('sara@clinic.com','password123'); } },
+];
+
+function renderSteps() {
+  document.getElementById('step-bar').innerHTML =
+    `<span class="step-bar-label">Jump to:</span>` +
+    steps.map((s,i) => `<button class="step-btn" onclick="steps[${i}].fn()">${s.label}</button>`).join('');
+}
+
+/* ── RENDER ── */
+function render() {
+  renderNav();
+  let body = '';
+  switch (S.screen) {
+    case 'home':         body = screenHome();        break;
+    case 'login':        body = screenLogin();       break;
+    case 'register':     body = screenRegister();    break;
+    case 'book':         body = screenBook();        break;
+    case 'sns':          body = screenSNS();         break;
+    case 'patient_dash': body = screenPatientDash(); break;
+    case 'doctor_dash':  body = screenDoctorDash();  break;
+    default:             body = screenHome();
+  }
+  document.getElementById('mb-body').innerHTML = body;
+  renderSteps();
+}
+
+/* ── ACTIONS ── */
+function go(screen) { S.screen = screen; render(); }
+
+function logout() { S.user = null; S.screen = 'home'; render(); }
+
+function loginAs(email, pass) {
+  const u = users[email];
+  if (u && u.password === pass) {
+    S.user = { name: u.name, role: u.role, email };
+    S.screen = u.role === 'doctor' ? 'doctor_dash' : 'home';
+    render();
+  }
+}
+
+function doLogin() {
+  const email = document.getElementById('le').value.trim().toLowerCase();
+  const pass  = document.getElementById('lp').value;
+  const u     = users[email];
+  if (u && u.password === pass) {
+    S.loginError = '';
+    S.user = { name: u.name, role: u.role, email };
+    S.screen = u.role === 'doctor' ? 'doctor_dash' : 'home';
+  } else {
+    S.loginError = 'Invalid email or password. Try the demo credentials below.';
+    S.screen = 'login';
+  }
+  render();
+}
+
+function doRegister() {
+  S.regSuccess = true;
+  render();
+  setTimeout(() => { S.regSuccess = false; S.screen = 'login'; render(); }, 1800);
+}
+
+function openBook(docId) {
+  S.selectedDoctor = docId;
+  S.selectedDate   = null;
+  S.selectedSlot   = null;
+  go('book');
+}
+
+function selectSlot(date, slot) {
+  S.selectedDate = date;
+  S.selectedSlot = slot;
+  render();
+}
+
+function confirmBook() {
+  if (S.selectedDate && S.selectedSlot) {
+    S.bookings.push({ docId: S.selectedDoctor, date: S.selectedDate, time: S.selectedSlot, status: 'scheduled' });
+    go('sns');
+  }
+}
+
+function cancelBooking(i) {
+  S.bookings[i].status = 'cancelled';
+  render();
+}
+
+function updateDocStatus(i) {
+  const val = document.getElementById('sel_' + i).value;
+  docBookings[i].status = val;
+  render();
+}
+
+render();
+</script>
+</body>
+</html>

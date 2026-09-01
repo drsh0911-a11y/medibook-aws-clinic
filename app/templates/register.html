@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Register – MediBook{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header card-header-primary py-3">
+        <h5 class="mb-0"><i class="bi bi-person-plus me-2"></i>Create Account</h5>
+      </div>
+      <div class="card-body p-4">
+        <form method="post">
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Full Name</label>
+            <input type="text" name="name" class="form-control" placeholder="Your full name" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Email Address</label>
+            <input type="email" name="email" class="form-control" placeholder="you@example.com" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Password</label>
+            <input type="password" name="password" class="form-control" minlength="6" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Register as</label>
+            <select name="role" id="roleSelect" class="form-select" onchange="toggleSpecialty()">
+              <option value="patient">Patient</option>
+              <option value="doctor">Doctor</option>
+            </select>
+          </div>
+          <div class="mb-3 d-none" id="specialtyDiv">
+            <label class="form-label fw-semibold">Specialty</label>
+            <select name="specialty" class="form-select">
+              <option value="General Practitioner">General Practitioner</option>
+              <option value="Cardiology">Cardiology</option>
+              <option value="Dermatology">Dermatology</option>
+              <option value="Neurology">Neurology</option>
+              <option value="Orthopedics">Orthopedics</option>
+              <option value="Pediatrics">Pediatrics</option>
+              <option value="Psychiatry">Psychiatry</option>
+              <option value="Radiology">Radiology</option>
+              <option value="Surgery">Surgery</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">
+            <i class="bi bi-check-circle me-1"></i>Create Account
+          </button>
+        </form>
+        <p class="text-center mt-3 mb-0 text-muted small">
+          Already have an account? <a href="{{ url_for('login') }}">Login</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function toggleSpecialty() {
+  const role = document.getElementById('roleSelect').value;
+  document.getElementById('specialtyDiv').classList.toggle('d-none', role !== 'doctor');
+}
+</script>
+{% endblock %}
