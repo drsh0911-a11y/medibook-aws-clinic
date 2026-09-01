@@ -21,3 +21,5 @@ Watch the live application walkthrough and AWS infrastructure tour:
 - /app: Flask application source code, HTML templates, and static assets.
 - /deploy: Database DDL scripts, shell setup scripts, and deployment configurations.
 - DEPLOYMENT_GUIDE.md: Step-by-step AWS provisioning and configuration instructions.
+
+- \Medical_Clinic_Proposal.pptx\: Project presentation slides deck.
